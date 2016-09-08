@@ -92,6 +92,6 @@ func main() {
 			log.Printf("Temperature %v", temperature)
 		}
 
-		time.Sleep(config.ReportingInterval * time.Second)
+		time.Sleep(time.Second * time.Duration(config.ReportingInterval))
 	}
 }
