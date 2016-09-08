@@ -68,6 +68,7 @@ func main() {
 	defer sensor.Close()
 
 	for {
+		var err error
 		reading := SensorReading{}
 
 		reading.Altitude, err = sensor.Altitude()
