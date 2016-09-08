@@ -15,9 +15,9 @@ import (
 
 // SensorReading ...
 type SensorReading struct {
-	Altitude    float32 `json:"altitude"`
-	Pressure    float32 `json:"pressure"`
-	Temperature float32 `json:"temperature"`
+	Altitude    float64 `json:"altitude"`
+	Pressure    int     `json:"pressure"`
+	Temperature float64 `json:"temperature"`
 }
 
 // Config ...
