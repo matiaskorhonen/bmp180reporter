@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -93,12 +92,12 @@ func main() {
 
 		if firstLoop {
 			firstLoop = false
-			log.Print("Waiting for the sensor to stabilise")
+			log.Print("Waiting for the sensor to stabilise...")
 
 			// Make sure the sensor has some time to get a grip (regardless of
 			// the ReportingInterval value)
 			time.Sleep(time.Second * 5)
-			fmt.Println("...")
+			log.Println("Done.")
 		} else {
 			// TODO: post update
 		}
