@@ -69,22 +69,20 @@ func main() {
 
 	for {
 		reading := SensorReading{}
-		reading.Pressure, err = sensor.Pressure()
 
+		reading.Altitude, err = sensor.Altitude()
 		if err != nil {
 			log.Println(err)
 			continue
 		}
 
-		reading.Altitude, err = sensor.Altitude()
-
+		reading.Pressure, err = sensor.Pressure()
 		if err != nil {
 			log.Println(err)
 			continue
 		}
 
 		reading.Temperature, err = sensor.Temperature()
-
 		if err != nil {
 			log.Println(err)
 			continue
