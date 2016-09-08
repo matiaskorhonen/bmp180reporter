@@ -99,8 +99,8 @@ func main() {
 
 		log.Printf("Reading: %v\n", reading)
 
-		if count < discardCount {
-			log.Printf("Waiting for the sensor to stabilise (%v/%v)\n", count+1, discardCount)
+		if count <= discardCount {
+			log.Printf("Waiting for the sensor to stabilise (%v/%v)\n", count, discardCount)
 			continue
 		} else {
 			// TODO: post update
