@@ -1,0 +1,4 @@
+reporting_interval = 60
+thing_name = "Barometer"
+thing_endpoint = "bc440501476.iot.eu-west-1.amazonaws.com"
+thing_region = "eu-west-1"
