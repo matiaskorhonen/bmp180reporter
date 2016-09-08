@@ -22,7 +22,7 @@ type SensorReading struct {
 
 // Config ...
 type Config struct {
-	ReportingInterval uint   `toml:"reporting_interval"`
+	ReportingInterval int    `toml:"reporting_interval"`
 	ThingName         string `toml:"thing_name"`
 	ThingEndpoint     string `toml:"thing_endpoint"`
 	ThingRegion       string `toml:"thing_region"`
