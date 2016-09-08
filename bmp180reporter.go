@@ -30,6 +30,8 @@ type Config struct {
 
 var config Config
 
+const discardCount int64 = 5
+
 func init() {
 	var help bool
 	var configPath string
@@ -67,7 +69,11 @@ func main() {
 	sensor.Run()
 	defer sensor.Close()
 
+	var count int64
+
 	for {
+		count += 1
+
 		var err error
 		reading := SensorReading{}
 
@@ -92,5 +98,12 @@ func main() {
 		time.Sleep(time.Second * time.Duration(config.ReportingInterval))
 
 		log.Printf("Reading: %v\n", reading)
+
+		if count < discardCount {
+			log.Printf("Waiting for the sensor to stabilise (%v/%v)\n", count+1, discardCount)
+			continue
+		} else {
+			// TODO: post update
+		}
 	}
 }
