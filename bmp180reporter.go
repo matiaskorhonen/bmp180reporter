@@ -15,9 +15,9 @@ import (
 
 // SensorReading ...
 type SensorReading struct {
-	Temperature float32 `json:"temperature"`
-	Pressure    float32 `json:"pressure"`
 	Altitude    float32 `json:"altitude"`
+	Pressure    float32 `json:"pressure"`
+	Temperature float32 `json:"temperature"`
 }
 
 // Config ...
@@ -68,30 +68,30 @@ func main() {
 	defer sensor.Close()
 
 	for {
-		pressure, err := sensor.Pressure()
+		reading := SensorReading{}
+		reading.Pressure, err = sensor.Pressure()
 
 		if err != nil {
-			log.Fatal(err)
-		} else {
-			log.Printf("Pressure %v", pressure)
+			log.Println(err)
+			continue
 		}
 
-		altitude, err := sensor.Altitude()
+		reading.Altitude, err = sensor.Altitude()
 
 		if err != nil {
-			log.Fatal(err)
-		} else {
-			log.Printf("Altitude %v", altitude)
+			log.Println(err)
+			continue
 		}
 
-		temperature, err := sensor.Temperature()
+		reading.Temperature, err = sensor.Temperature()
 
 		if err != nil {
-			log.Fatal(err)
-		} else {
-			log.Printf("Temperature %v", temperature)
+			log.Println(err)
+			continue
 		}
 
 		time.Sleep(time.Second * time.Duration(config.ReportingInterval))
+
+		log.Printf("Reading: %v\n", reading)
 	}
 }
