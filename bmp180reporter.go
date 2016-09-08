@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -15,7 +16,6 @@ import (
 
 // SensorReading ...
 type SensorReading struct {
-	Altitude    float64 `json:"altitude"`
 	Pressure    int     `json:"pressure"`
 	Temperature float64 `json:"temperature"`
 }
@@ -69,19 +69,11 @@ func main() {
 	sensor.Run()
 	defer sensor.Close()
 
-	var count int64
+	firstLoop := true
 
 	for {
-		count += 1
-
 		var err error
 		reading := SensorReading{}
-
-		reading.Altitude, err = sensor.Altitude()
-		if err != nil {
-			log.Println(err)
-			continue
-		}
 
 		reading.Pressure, err = sensor.Pressure()
 		if err != nil {
@@ -99,9 +91,14 @@ func main() {
 
 		log.Printf("Reading: %v\n", reading)
 
-		if count <= discardCount {
-			log.Printf("Waiting for the sensor to stabilise (%v/%v)\n", count, discardCount)
-			continue
+		if firstLoop {
+			firstLoop = false
+			log.Print("Waiting for the sensor to stabilise")
+
+			// Make sure the sensor has some time to get a grip (regardless of
+			// the ReportingInterval value)
+			time.Sleep(time.Second * 5)
+			fmt.Println("...")
 		} else {
 			// TODO: post update
 		}
