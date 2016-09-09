@@ -92,6 +92,7 @@ func main() {
 		var err error
 		reading := SensorReading{}
 
+		log.Println("Getting reading...")
 		reading.Pressure, err = sensor.Pressure()
 		if err != nil {
 			log.Println(err)
@@ -103,8 +104,6 @@ func main() {
 			log.Println(err)
 			continue
 		}
-
-		time.Sleep(time.Second * time.Duration(config.ReportingInterval))
 
 		log.Printf("Reading: %v\n", reading)
 
@@ -120,6 +119,7 @@ func main() {
 			go func() {
 				updateThingShadow(&reading)
 			}()
+			time.Sleep(time.Second * time.Duration(config.ReportingInterval))
 		}
 	}
 }
