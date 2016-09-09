@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"io/ioutil"
 	"log"
@@ -8,6 +9,9 @@ import (
 	"time"
 
 	"github.com/BurntSushi/toml"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/iotdataplane"
 	"github.com/kidoman/embd"
 	_ "github.com/kidoman/embd/host/rpi"
 	"github.com/kidoman/embd/sensor/bmp180"
@@ -99,7 +103,51 @@ func main() {
 			time.Sleep(time.Second * 5)
 			log.Println("Done.")
 		} else {
-			// TODO: post update
+			go func() {
+				updateThingShadow(&reading)
+			}()
 		}
 	}
+}
+
+func updateThingShadow(reading *SensorReading) {
+	if config.ThingName == "" || config.ThingEndpoint == "" || config.ThingRegion == "" {
+		log.Println("Missing thing_name, thing_endpoint, or thing_region configuration")
+		return
+	}
+
+	sess, err := session.NewSession()
+	if err != nil {
+		log.Println("Failed to create AWS session: ", err)
+		return
+	}
+
+	awsConfig := aws.NewConfig().WithEndpoint(config.ThingEndpoint).WithRegion(config.ThingRegion)
+	svc := iotdataplane.New(sess, awsConfig)
+
+	payload, err := json.Marshal(map[string]map[string]SensorReading{
+		"state": map[string]SensorReading{
+			"reported": *reading,
+		},
+	})
+	if err != nil {
+		log.Println("Serialization error: ", err)
+		return
+	}
+
+	log.Println("Updating Thing Shadow…")
+	params := &iotdataplane.UpdateThingShadowInput{
+		Payload:   payload,
+		ThingName: aws.String(config.ThingName),
+	}
+	_, err = svc.UpdateThingShadow(params)
+
+	if err != nil {
+		// Print the error, cast err to awserr.Error to get the Code and
+		// Message from an error.
+		log.Println(err.Error())
+		return
+	}
+
+	log.Println("Thing Shadow updated")
 }
