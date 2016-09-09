@@ -1,0 +1,3 @@
+# Defaults for bmp180reporter
+# The following setting tells bmp180reporter where to find the TOML config file
+BMP180REPORTER_OPTS=-config /etc/bmp180reporter.toml

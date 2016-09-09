@@ -1,0 +1,15 @@
+[Unit]
+Description=BMP180 sensor monitor
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+User=root
+EnvironmentFile=/etc/default/bmp180reporter
+ExecStart=/usr/local/bin/bmp180reporter $BMP180REPORTER_OPTS
+Restart=on-failure
+RestartSec=10
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
