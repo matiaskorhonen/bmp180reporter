@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/signal"
 	"time"
 
 	"github.com/BurntSushi/toml"
@@ -74,7 +75,16 @@ func main() {
 
 	log.Println("Starting the BMP180 sensor")
 	sensor.Run()
-	defer sensor.Close()
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		for range c {
+			sensor.Close()
+			bus.Close()
+			os.Exit(1)
+		}
+	}()
 
 	firstLoop := true
 
