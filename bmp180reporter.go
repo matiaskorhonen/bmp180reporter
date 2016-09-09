@@ -66,9 +66,13 @@ func init() {
 }
 
 func main() {
+	log.Println("Initializing the I2C bus")
 	bus := embd.NewI2CBus(1)
+
+	log.Println("Initializing the BMP180 sensor")
 	sensor := bmp180.New(bus)
 
+	log.Println("Starting the BMP180 sensor")
 	sensor.Run()
 	defer sensor.Close()
 
